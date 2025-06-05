@@ -1,14 +1,12 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/layout/footer";
-import { NavWrapper } from "@/components/layout/nav-wrapper";
 import { Providers } from "@/providers";
 
 export default function NotFound() {
   return (
     <Providers>
       <div className="min-h-screen flex flex-col">
-        <NavWrapper />
         <main className="flex-1 flex items-center justify-center px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
