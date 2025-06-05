@@ -1,50 +1,38 @@
-import type React from "react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Providers } from "@/components/providers";
+import { Providers } from "@/providers";
+import { Toaster } from "@/components/ui/toaster";
 
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-});
+const inter = Inter({ subsets: ["latin"] });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export const metadata: Metadata = {
-  title: "Randevya - Mükemmel Randevunuzu Alın",
-  description:
-    "Bölgenizdeki en iyi kuaförlerde randevu bulun ve rezervasyon yapın. Kolay, hızlı ve pratik.",
-  keywords: ["kuaför", "randevu", "rezervasyon", "güzellik", "kuaför", "spa"],
-  authors: [{ name: "Randevya Ekibi" }],
-  creator: "Randevya",
-  publisher: "Randevya",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
+  title: {
+    default: "Randevya",
+    template: "%s | Randevya",
   },
-  metadataBase: new URL("https://randevya.com"),
+  description: "Kuaför randevu yönetim platformu",
   openGraph: {
-    title: "Randevya - Mükemmel Randevunuzu Alın",
-    description:
-      "Bölgenizdeki en iyi kuaförlerde randevu bulun ve rezervasyon yapın.",
+    title: "Randevya",
+    description: "Kuaför randevu yönetim platformu",
     url: "https://randevya.com",
     siteName: "Randevya",
     locale: "tr_TR",
     type: "website",
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Randevya - Mükemmel Randevunuzu Alın",
-    description:
-      "Bölgenizdeki en iyi kuaförlerde randevu bulun ve rezervasyon yapın.",
-  },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-  },
-  themeColor: "#6366f1",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/icons/icon-512x512.png",
+    shortcut: "/icons/icon-512x512.png",
+    apple: "/icons/icon-512x512.png",
+  },
 };
 
 export default function RootLayout({
@@ -53,16 +41,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="tr" className={inter.className}>
+    <html lang="tr" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/icon-192x192.png" />
+        <meta
+          name="theme-color"
+          content="#ffffff"
+          media="(prefers-color-scheme: light)"
+        />
+        <meta
+          name="theme-color"
+          content="#000000"
+          media="(prefers-color-scheme: dark)"
+        />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Randevya" />
+        <link rel="apple-touch-icon" href="/icons/icon-512x512.png" />
       </head>
-      <body className="antialiased">
-        <Providers>{children}</Providers>
+      <body className={inter.className}>
+        <Providers>
+          {children}
+          <Toaster />
+        </Providers>
       </body>
     </html>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Menu, X, User, LogOut } from "lucide-react";
@@ -9,13 +9,57 @@ import { getAuthState, authStorage } from "@/lib/auth";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const { isAuthenticated, user } = getAuthState();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = () => {
     authStorage.clear();
     router.push("/");
     router.refresh();
+  };
+
+  // Prevent hydration mismatch by not rendering auth-dependent content until mounted
+  const renderAuthContent = () => {
+    if (!mounted) return null;
+
+    if (isAuthenticated) {
+      return (
+        <div className="flex items-center space-x-4">
+          <Link
+            href="/dashboard"
+            className="text-foreground/60 hover:text-foreground transition-colors"
+          >
+            Kontrol Paneli
+          </Link>
+          <div className="flex items-center space-x-2">
+            <User className="h-4 w-4" />
+            <span className="text-sm">{user?.email}</span>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleLogout}
+            className="text-foreground/60 hover:text-foreground"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Çıkış Yap
+          </Button>
+        </div>
+      );
+    }
+
+    return (
+      <Link href="/login">
+        <Button variant="default" size="sm">
+          Kuaför Girişi
+        </Button>
+      </Link>
+    );
   };
 
   return (
@@ -40,35 +84,7 @@ export function Header() {
             >
               Kuaför Bul
             </Link>
-            {isAuthenticated ? (
-              <div className="flex items-center space-x-4">
-                <Link
-                  href="/dashboard"
-                  className="text-foreground/60 hover:text-foreground transition-colors"
-                >
-                  Kontrol Paneli
-                </Link>
-                <div className="flex items-center space-x-2">
-                  <User className="h-4 w-4" />
-                  <span className="text-sm">{user?.email}</span>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleLogout}
-                  className="text-foreground/60 hover:text-foreground"
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Çıkış Yap
-                </Button>
-              </div>
-            ) : (
-              <Link href="/login">
-                <Button variant="default" size="sm">
-                  Kuaför Girişi
-                </Button>
-              </Link>
-            )}
+            {renderAuthContent()}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -97,7 +113,7 @@ export function Header() {
               >
                 Kuaför Bul
               </Link>
-              {isAuthenticated ? (
+              {mounted && isAuthenticated ? (
                 <>
                   <Link
                     href="/dashboard"
