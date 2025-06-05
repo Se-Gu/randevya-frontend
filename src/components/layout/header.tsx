@@ -7,7 +7,11 @@ import { Menu, X, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getAuthState, authStorage } from "@/lib/auth";
 
-export function Header() {
+interface HeaderProps {
+  containerClassName?: string;
+}
+
+export function Header({ containerClassName = "" }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
@@ -64,7 +68,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4">
+      <div className={`container mx-auto px-4 ${containerClassName}`}>
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
@@ -78,12 +82,14 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            <Link
-              href="/salons"
-              className="text-foreground/60 hover:text-foreground transition-colors"
-            >
-              Kuaför Bul
-            </Link>
+            {!isAuthenticated && (
+              <Link
+                href="/salons"
+                className="text-foreground/60 hover:text-foreground transition-colors"
+              >
+                Kuaför Bul
+              </Link>
+            )}
             {renderAuthContent()}
           </nav>
 
@@ -106,13 +112,15 @@ export function Header() {
         {isMenuOpen && (
           <div className="md:hidden border-t py-4">
             <nav className="flex flex-col space-y-4">
-              <Link
-                href="/salons"
-                className="text-foreground/60 hover:text-foreground transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Kuaför Bul
-              </Link>
+              {!isAuthenticated && (
+                <Link
+                  href="/salons"
+                  className="text-foreground/60 hover:text-foreground transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Kuaför Bul
+                </Link>
+              )}
               {mounted && isAuthenticated ? (
                 <>
                   <Link

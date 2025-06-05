@@ -16,7 +16,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Header />
+      <Header containerClassName="md:pl-64" />
       <div className="flex flex-1">
         {/* Mobile Sidebar */}
         <div
