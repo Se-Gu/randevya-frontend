@@ -35,7 +35,7 @@ export default function HomePage() {
                   size="lg"
                   className="w-full sm:w-auto"
                 >
-                  Kuaför Sahibi? Giriş Yap
+                  Kuaför Sahibi Misiniz? Giriş Yapın
                 </Button>
               </Link>
             </div>
