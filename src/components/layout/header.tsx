@@ -29,7 +29,14 @@ export function Header({ containerClassName = "" }: HeaderProps) {
 
   // Prevent hydration mismatch by not rendering auth-dependent content until mounted
   const renderAuthContent = () => {
-    if (!mounted) return null;
+    if (!mounted) {
+      return (
+        <div className="flex items-center space-x-4">
+          <div className="h-4 w-24 bg-secondary animate-pulse rounded" />
+          <div className="h-4 w-24 bg-secondary animate-pulse rounded" />
+        </div>
+      );
+    }
 
     if (isAuthenticated) {
       return (
@@ -82,13 +89,17 @@ export function Header({ containerClassName = "" }: HeaderProps) {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            {!isAuthenticated && (
-              <Link
-                href="/salons"
-                className="text-foreground/60 hover:text-foreground transition-colors"
-              >
-                Kuaför Bul
-              </Link>
+            {!mounted ? (
+              <div className="h-4 w-24 bg-secondary animate-pulse rounded" />
+            ) : (
+              !isAuthenticated && (
+                <Link
+                  href="/salons"
+                  className="text-foreground/60 hover:text-foreground transition-colors"
+                >
+                  Kuaför Bul
+                </Link>
+              )
             )}
             {renderAuthContent()}
           </nav>
@@ -112,47 +123,50 @@ export function Header({ containerClassName = "" }: HeaderProps) {
         {isMenuOpen && (
           <div className="md:hidden border-t py-4">
             <nav className="flex flex-col space-y-4">
-              {!isAuthenticated && (
-                <Link
-                  href="/salons"
-                  className="text-foreground/60 hover:text-foreground transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Kuaför Bul
-                </Link>
-              )}
-              {mounted && isAuthenticated ? (
+              {!mounted ? (
                 <>
-                  <Link
-                    href="/dashboard"
-                    className="text-foreground/60 hover:text-foreground transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Kontrol Paneli
-                  </Link>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <User className="h-4 w-4" />
-                    <span>{user?.email}</span>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      handleLogout();
-                      setIsMenuOpen(false);
-                    }}
-                    className="justify-start text-foreground/60 hover:text-foreground"
-                  >
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Çıkış Yap
-                  </Button>
+                  <div className="h-4 w-24 bg-secondary animate-pulse rounded" />
+                  <div className="h-4 w-24 bg-secondary animate-pulse rounded" />
                 </>
               ) : (
-                <Link href="/login" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="default" size="sm" className="w-full">
-                    Kuaför Girişi
-                  </Button>
-                </Link>
+                <>
+                  {!isAuthenticated && (
+                    <Link
+                      href="/salons"
+                      className="text-foreground/60 hover:text-foreground transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Kuaför Bul
+                    </Link>
+                  )}
+                  {isAuthenticated && (
+                    <>
+                      <Link
+                        href="/dashboard"
+                        className="text-foreground/60 hover:text-foreground transition-colors"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Kontrol Paneli
+                      </Link>
+                      <div className="flex items-center space-x-2 text-sm">
+                        <User className="h-4 w-4" />
+                        <span>{user?.email}</span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          handleLogout();
+                          setIsMenuOpen(false);
+                        }}
+                        className="justify-start text-foreground/60 hover:text-foreground"
+                      >
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Çıkış Yap
+                      </Button>
+                    </>
+                  )}
+                </>
               )}
             </nav>
           </div>
