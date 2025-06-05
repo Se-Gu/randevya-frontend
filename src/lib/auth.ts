@@ -1,64 +1,62 @@
 "use client";
 
-export interface User {
-  id: string;
-  email: string;
-  role: string;
-  salonId?: string;
-}
+import { User, LoginResponse } from "@/types";
+import Cookies from "js-cookie";
 
-export interface AuthState {
-  user: User | null;
-  token: string | null;
-  isAuthenticated: boolean;
-}
+const TOKEN_KEY = "auth_token";
+const USER_KEY = "auth_user";
 
 export const authStorage = {
-  getToken: (): string | null => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem("auth_token");
+  getToken: () => {
+    return Cookies.get(TOKEN_KEY) || null;
   },
 
-  setToken: (token: string): void => {
-    if (typeof window === "undefined") return;
-    localStorage.setItem("auth_token", token);
+  setToken: (token: string) => {
+    Cookies.set(TOKEN_KEY, token, {
+      expires: 7, // 7 days
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
   },
 
-  removeToken: (): void => {
-    if (typeof window === "undefined") return;
-    localStorage.removeItem("auth_token");
+  removeToken: () => {
+    Cookies.remove(TOKEN_KEY);
   },
 
   getUser: (): User | null => {
-    if (typeof window === "undefined") return null;
-    const userStr = localStorage.getItem("auth_user");
-    return userStr ? JSON.parse(userStr) : null;
+    const user = Cookies.get(USER_KEY);
+    return user ? JSON.parse(user) : null;
   },
 
-  setUser: (user: User): void => {
-    if (typeof window === "undefined") return;
-    localStorage.setItem("auth_user", JSON.stringify(user));
+  setUser: (user: User) => {
+    Cookies.set(USER_KEY, JSON.stringify(user), {
+      expires: 7, // 7 days
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
   },
 
-  removeUser: (): void => {
-    if (typeof window === "undefined") return;
-    localStorage.removeItem("auth_user");
+  removeUser: () => {
+    Cookies.remove(USER_KEY);
   },
 
-  clear: (): void => {
-    if (typeof window === "undefined") return;
-    localStorage.removeItem("auth_token");
-    localStorage.removeItem("auth_user");
+  set: (data: LoginResponse) => {
+    authStorage.setToken(data.access_token);
+    authStorage.setUser(data.user);
+  },
+
+  clear: () => {
+    authStorage.removeToken();
+    authStorage.removeUser();
   },
 };
 
-export const getAuthState = (): AuthState => {
+export function getAuthState() {
   const token = authStorage.getToken();
   const user = authStorage.getUser();
 
   return {
-    token,
+    isAuthenticated: !!token,
     user,
-    isAuthenticated: !!(token && user),
   };
-};
+}

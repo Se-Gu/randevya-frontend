@@ -1,16 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Menu, X, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getAuthState, authStorage } from "@/lib/auth";
 
-export function Header() {
+interface HeaderProps {
+  containerClassName?: string;
+}
+
+export function Header({ containerClassName = "" }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const { isAuthenticated, user } = getAuthState();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = () => {
     authStorage.clear();
@@ -18,9 +27,55 @@ export function Header() {
     router.refresh();
   };
 
+  // Prevent hydration mismatch by not rendering auth-dependent content until mounted
+  const renderAuthContent = () => {
+    if (!mounted) {
+      return (
+        <div className="flex items-center space-x-4">
+          <div className="h-4 w-24 bg-secondary animate-pulse rounded" />
+          <div className="h-4 w-24 bg-secondary animate-pulse rounded" />
+        </div>
+      );
+    }
+
+    if (isAuthenticated) {
+      return (
+        <div className="flex items-center space-x-4">
+          <Link
+            href="/dashboard"
+            className="text-foreground/60 hover:text-foreground transition-colors"
+          >
+            Kontrol Paneli
+          </Link>
+          <div className="flex items-center space-x-2">
+            <User className="h-4 w-4" />
+            <span className="text-sm">{user?.email}</span>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleLogout}
+            className="text-foreground/60 hover:text-foreground"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Çıkış Yap
+          </Button>
+        </div>
+      );
+    }
+
+    return (
+      <Link href="/login">
+        <Button variant="default" size="sm">
+          Kuaför Girişi
+        </Button>
+      </Link>
+    );
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4">
+      <div className={`container mx-auto px-4 ${containerClassName}`}>
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
@@ -34,41 +89,19 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            <Link
-              href="/salons"
-              className="text-foreground/60 hover:text-foreground transition-colors"
-            >
-              Kuaför Bul
-            </Link>
-            {isAuthenticated ? (
-              <div className="flex items-center space-x-4">
+            {!mounted ? (
+              <div className="h-4 w-24 bg-secondary animate-pulse rounded" />
+            ) : (
+              !isAuthenticated && (
                 <Link
-                  href="/dashboard"
+                  href="/salons"
                   className="text-foreground/60 hover:text-foreground transition-colors"
                 >
-                  Kontrol Paneli
+                  Kuaför Bul
                 </Link>
-                <div className="flex items-center space-x-2">
-                  <User className="h-4 w-4" />
-                  <span className="text-sm">{user?.email}</span>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleLogout}
-                  className="text-foreground/60 hover:text-foreground"
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Çıkış Yap
-                </Button>
-              </div>
-            ) : (
-              <Link href="/login">
-                <Button variant="default" size="sm">
-                  Kuaför Girişi
-                </Button>
-              </Link>
+              )
             )}
+            {renderAuthContent()}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -90,45 +123,50 @@ export function Header() {
         {isMenuOpen && (
           <div className="md:hidden border-t py-4">
             <nav className="flex flex-col space-y-4">
-              <Link
-                href="/salons"
-                className="text-foreground/60 hover:text-foreground transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Kuaför Bul
-              </Link>
-              {isAuthenticated ? (
+              {!mounted ? (
                 <>
-                  <Link
-                    href="/dashboard"
-                    className="text-foreground/60 hover:text-foreground transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Kontrol Paneli
-                  </Link>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <User className="h-4 w-4" />
-                    <span>{user?.email}</span>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      handleLogout();
-                      setIsMenuOpen(false);
-                    }}
-                    className="justify-start text-foreground/60 hover:text-foreground"
-                  >
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Çıkış Yap
-                  </Button>
+                  <div className="h-4 w-24 bg-secondary animate-pulse rounded" />
+                  <div className="h-4 w-24 bg-secondary animate-pulse rounded" />
                 </>
               ) : (
-                <Link href="/login" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="default" size="sm" className="w-full">
-                    Kuaför Girişi
-                  </Button>
-                </Link>
+                <>
+                  {!isAuthenticated && (
+                    <Link
+                      href="/salons"
+                      className="text-foreground/60 hover:text-foreground transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Kuaför Bul
+                    </Link>
+                  )}
+                  {isAuthenticated && (
+                    <>
+                      <Link
+                        href="/dashboard"
+                        className="text-foreground/60 hover:text-foreground transition-colors"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Kontrol Paneli
+                      </Link>
+                      <div className="flex items-center space-x-2 text-sm">
+                        <User className="h-4 w-4" />
+                        <span>{user?.email}</span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          handleLogout();
+                          setIsMenuOpen(false);
+                        }}
+                        className="justify-start text-foreground/60 hover:text-foreground"
+                      >
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Çıkış Yap
+                      </Button>
+                    </>
+                  )}
+                </>
               )}
             </nav>
           </div>
