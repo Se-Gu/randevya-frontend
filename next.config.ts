@@ -1,4 +1,4 @@
-import type { NextConfig } from "next"
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   eslint: {
@@ -13,6 +13,6 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react"],
   },
-}
+};
 
-export default nextConfig
+export default nextConfig;
