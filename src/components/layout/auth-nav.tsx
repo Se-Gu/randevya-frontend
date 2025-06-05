@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -49,9 +49,16 @@ const navItems = [
 
 export function AuthNav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const path = usePathname();
   const router = useRouter();
-  const { user } = getAuthState();
+
+  useEffect(() => {
+    setMounted(true);
+    const { user } = getAuthState();
+    setUserEmail(user?.email || null);
+  }, []);
 
   const handleLogout = () => {
     authStorage.clear();
@@ -82,8 +89,9 @@ export function AuthNav() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center text-sm font-medium text-foreground/60 hover:text-foreground transition-colors",
-                    path === item.href && "text-foreground"
+                    "flex items-center text-sm font-medium text-foreground/60 hover:text-foreground transition-colors px-3 py-2 rounded-md",
+                    path === item.href &&
+                      "text-foreground bg-accent border-l-4 border-primary"
                   )}
                 >
                   <Icon className="mr-2 h-4 w-4" />
@@ -94,7 +102,13 @@ export function AuthNav() {
             <div className="flex items-center space-x-4 ml-4 pl-4 border-l">
               <div className="flex items-center space-x-2">
                 <User className="h-4 w-4" />
-                <span className="text-sm">{user?.email}</span>
+                <span className="text-sm">
+                  {mounted ? (
+                    userEmail
+                  ) : (
+                    <span className="h-4 w-24 bg-secondary animate-pulse rounded" />
+                  )}
+                </span>
               </div>
               <Button
                 variant="ghost"
@@ -134,8 +148,9 @@ export function AuthNav() {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      "flex items-center text-sm font-medium text-foreground/60 hover:text-foreground transition-colors",
-                      path === item.href && "text-foreground"
+                      "flex items-center text-sm font-medium text-foreground/60 hover:text-foreground transition-colors px-3 py-2 rounded-md",
+                      path === item.href &&
+                        "text-foreground bg-accent border-l-4 border-primary"
                     )}
                     onClick={() => setIsMenuOpen(false)}
                   >
@@ -146,7 +161,13 @@ export function AuthNav() {
               })}
               <div className="flex items-center space-x-2 text-sm pt-4 border-t">
                 <User className="h-4 w-4" />
-                <span>{user?.email}</span>
+                <span>
+                  {mounted ? (
+                    userEmail
+                  ) : (
+                    <span className="h-4 w-24 bg-secondary animate-pulse rounded" />
+                  )}
+                </span>
               </div>
               <Button
                 variant="ghost"
