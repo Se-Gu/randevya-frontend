@@ -90,8 +90,10 @@ export default function HomePage() {
                 src="/images/homepage-cta-bg.png"
                 alt="Modern salon interior"
                 fill
+                priority
                 style={{ objectFit: "cover" }}
                 className="z-0"
+                sizes="100vw"
               />
               <div className="absolute inset-0 bg-gradient-to-br from-slate-900/50 via-slate-800/30 to-slate-900/60" />
             </div>
@@ -136,8 +138,10 @@ export default function HomePage() {
                 src="/images/homepage-hero-bg.jpg"
                 alt="Professional salon owner"
                 fill
+                priority
                 style={{ objectFit: "cover", objectPosition: "center" }}
                 className="z-0"
+                sizes="100vw"
               />
               <div className="absolute inset-0 bg-gradient-to-br from-slate-900/60 via-slate-800/40 to-slate-900/70" />
             </div>
