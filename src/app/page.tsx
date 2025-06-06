@@ -170,7 +170,7 @@ export default function HomePage() {
                         <Button
                           variant="outline"
                           size="lg"
-                          className="bg-white/10 border-white/30 text-white hover:bg-white/20 px-8 py-4 text-lg"
+                          className="bg-white/10 border-white/30 text-white hover:bg-white/20 hover:text-white px-8 py-4 text-lg"
                         >
                           <Scissors className="mr-2 h-5 w-5" />
                           Giriş Yapın
