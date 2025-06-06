@@ -1,3 +1,5 @@
+import type { CreateUserDto, LoginResponse } from "@/types";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 export class ApiError extends Error {
@@ -67,9 +69,15 @@ export const authApi = {
       method: "POST",
       body: JSON.stringify(credentials),
     }),
+
+  register: (userData: CreateUserDto) =>
+    apiRequest<LoginResponse>("/auth/register", {
+      method: "POST",
+      body: JSON.stringify(userData),
+    }),
 };
 
-// salons API
+// Salons API
 export const salonsApi = {
   getAll: () => apiRequest<any[]>("/salons"),
   getById: (id: string) => apiRequest<any>(`/salons/${id}`),
@@ -77,6 +85,11 @@ export const salonsApi = {
   getAvailability: (id: string) =>
     apiRequest<any>(`/salons/${id}/availability`),
   getMe: () => apiRequest<any>("/salons/me"),
+  create: (data: any) =>
+    apiRequest<any>("/salons", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
   update: (id: string, data: any) =>
     apiRequest<any>(`/salons/${id}`, {
       method: "PATCH",

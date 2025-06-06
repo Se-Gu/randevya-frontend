@@ -7,9 +7,10 @@ export function RootNav() {
   const pathname = usePathname();
   const isDashboardRoute = pathname?.startsWith("/dashboard");
   const isLoginPage = pathname === "/login";
+  const isRegisterPage = pathname === "/register";
 
   // Do not render the navbar on dashboard routes or the login page
-  if (isDashboardRoute || isLoginPage) {
+  if (isDashboardRoute || isLoginPage || isRegisterPage) {
     return null;
   }
 
