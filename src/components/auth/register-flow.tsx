@@ -21,8 +21,8 @@ export type RegisterData = {
   salonPhone: string;
   salonEmail: string;
   address: string;
-  lat?: number;
-  lng?: number;
+  lat: number;
+  lng: number;
   weeklyAvailability: Array<{
     day: string;
     slots: Array<{ start: string; end: string }>;
@@ -63,6 +63,8 @@ export function RegisterFlow() {
     salonPhone: "",
     salonEmail: "",
     address: "",
+    lat: 0,
+    lng: 0,
     weeklyAvailability: [],
   });
 
