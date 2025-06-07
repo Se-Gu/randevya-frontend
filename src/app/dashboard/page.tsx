@@ -1,7 +1,7 @@
 import { Metadata } from "next";
-import { DashboardHeader } from "@/components/dashboard/header";
-import { DashboardShell } from "@/components/dashboard/shell";
-import { Overview } from "@/components/dashboard/overview";
+import { DashboardHeader } from "@/components/owner/dashboard/header";
+import { DashboardShell } from "@/components/owner/dashboard/shell";
+import { Overview } from "@/components/owner/dashboard/overview";
 export const metadata: Metadata = {
   title: "Kontrol Paneli",
   description: "Kuaför randevu yönetim kontrol paneli",
