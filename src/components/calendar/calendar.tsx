@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import {
   addDays,
@@ -56,13 +58,15 @@ export function Calendar({
   }
 
   const handlePrev = () => {
-    const newDate = view === "month" ? subMonths(currentDate, 1) : subWeeks(currentDate, 1);
+    const newDate =
+      view === "month" ? subMonths(currentDate, 1) : subWeeks(currentDate, 1);
     setCurrentDate(newDate);
     onDateChange?.(newDate);
   };
 
   const handleNext = () => {
-    const newDate = view === "month" ? addMonths(currentDate, 1) : addWeeks(currentDate, 1);
+    const newDate =
+      view === "month" ? addMonths(currentDate, 1) : addWeeks(currentDate, 1);
     setCurrentDate(newDate);
     onDateChange?.(newDate);
   };
@@ -70,29 +74,38 @@ export function Calendar({
   return (
     <div className={cn("space-y-2", className)}>
       <div className="flex items-center justify-between">
-        <button onClick={handlePrev} className="px-2 text-sm font-medium">&lt;</button>
+        <button onClick={handlePrev} className="px-2 text-sm font-medium">
+          &lt;
+        </button>
         <div className="font-semibold">
           {view === "month"
             ? format(currentDate, "MMMM yyyy")
             : `${format(start, "MMM d")} - ${format(end, "MMM d")}`}
         </div>
-        <button onClick={handleNext} className="px-2 text-sm font-medium">&gt;</button>
+        <button onClick={handleNext} className="px-2 text-sm font-medium">
+          &gt;
+        </button>
       </div>
       <div className="grid grid-cols-7 gap-px border text-sm">
-        {['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d => (
+        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
           <div key={d} className="bg-muted p-1 text-center font-medium">
             {d}
           </div>
         ))}
-        {days.map(day => (
+        {days.map((day) => (
           <div key={day.toISOString()} className="h-24 border p-1 align-top">
-            <div className="text-xs font-medium">{format(day, 'd')}</div>
+            <div className="text-xs font-medium">{format(day, "d")}</div>
             {events
-              .filter(e => isSameDay(parseISO(e.date), day))
-              .map(e => (
+              .filter((e) => isSameDay(parseISO(e.date), day))
+              .map((e) => (
                 <div key={e.id} className="mt-1 truncate text-xs">
-                  {renderEvent ? renderEvent(e) : (
-                    <span>{e.time ? `${e.time} - ` : ''}{e.title}</span>
+                  {renderEvent ? (
+                    renderEvent(e)
+                  ) : (
+                    <span>
+                      {e.time ? `${e.time} - ` : ""}
+                      {e.title}
+                    </span>
                   )}
                 </div>
               ))}

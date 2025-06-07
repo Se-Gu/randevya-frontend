@@ -50,11 +50,6 @@ const ownerNavItems = [
     href: "/dashboard/settings",
     icon: Settings,
   },
-  {
-    title: "Personel",
-    href: "/dashboard/staff",
-    icon: Users,
-  },
 ];
 
 const staffNavItems = [
