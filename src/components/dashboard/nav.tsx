@@ -7,6 +7,7 @@ import {
   Calendar,
   Settings,
   Users,
+  User,
   LayoutDashboard,
   Scissors,
 } from "lucide-react";
@@ -21,6 +22,11 @@ const items = [
     title: "Randevular",
     href: "/dashboard/appointments",
     icon: Calendar,
+  },
+  {
+    title: "Personel",
+    href: "/dashboard/staff",
+    icon: User,
   },
   {
     title: "Müşteriler",
