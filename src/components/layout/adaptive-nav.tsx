@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { getAuthState, authStorage } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
-const navItems = [
+const ownerNavItems = [
   {
     title: "Genel Bakış",
     href: "/dashboard",
@@ -50,12 +50,37 @@ const navItems = [
     href: "/dashboard/settings",
     icon: Settings,
   },
+  {
+    title: "Personel",
+    href: "/dashboard/staff",
+    icon: Users,
+  },
+];
+
+const staffNavItems = [
+  {
+    title: "Takvim",
+    href: "/dashboard/staff/calendar",
+    icon: Calendar,
+  },
+  {
+    title: "Analizler",
+    href: "/dashboard/staff/analytics",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "Ayarlar",
+    href: "/dashboard/settings",
+    icon: Settings,
+  },
 ];
 
 export function AdaptiveNav({
   isAuthenticated = true,
+  role = null,
 }: {
   isAuthenticated?: boolean;
+  role?: string | null;
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -63,6 +88,7 @@ export function AdaptiveNav({
   const navRef = useRef<HTMLElement>(null);
   const path = usePathname();
   const router = useRouter();
+  const navItems = role === "owner" ? ownerNavItems : staffNavItems;
 
   useEffect(() => {
     setMounted(true);
