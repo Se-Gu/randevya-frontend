@@ -12,10 +12,7 @@ export interface UpdateUserDto extends Partial<CreateUserDto> {}
 
 export interface User {
   id: string;
-  name: string;
   email: string;
   role: UserRole;
-  salonId?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  salonId: string;
 }

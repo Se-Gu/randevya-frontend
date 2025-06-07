@@ -16,3 +16,14 @@ export interface Staff {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface StaffMetrics {
+  appointmentCount: number;
+  revenue: number;
+  mostBookedService: {
+    serviceId: string;
+    name: string;
+    count: number;
+  } | null;
+  utilizationRate: number;
+}
