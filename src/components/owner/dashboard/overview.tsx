@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Users, Clock, DollarSign } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/loading";
@@ -59,7 +61,9 @@ export function Overview() {
             )}
           </div>
           <p className="text-xs text-muted-foreground">
-            {data.averageDuration === 0 && !isLoading ? "Henüz veri bulunmuyor" : ""}
+            {data.averageDuration === 0 && !isLoading
+              ? "Henüz veri bulunmuyor"
+              : ""}
           </p>
         </CardContent>
       </Card>
@@ -79,7 +83,9 @@ export function Overview() {
             )}
           </div>
           <p className="text-xs text-muted-foreground">
-            {data.monthlyRevenue === 0 && !isLoading ? "Henüz gelir bulunmuyor" : ""}
+            {data.monthlyRevenue === 0 && !isLoading
+              ? "Henüz gelir bulunmuyor"
+              : ""}
           </p>
         </CardContent>
       </Card>
