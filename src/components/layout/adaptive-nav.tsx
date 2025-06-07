@@ -31,6 +31,11 @@ const ownerNavItems = [
     icon: Calendar,
   },
   {
+    title: "Personel",
+    href: "/dashboard/staff",
+    icon: User,
+  },
+  {
     title: "Müşteriler",
     href: "/dashboard/customers",
     icon: Users,
