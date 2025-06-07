@@ -1,5 +1,7 @@
 import { Metadata } from "next";
-import { DashboardShell } from "@/components/dashboard/shell";
+import { DashboardHeader } from "@/components/owner/dashboard/header";
+import { DashboardShell } from "@/components/owner/dashboard/shell";
+import { StaffListClient } from "@/components/dashboard/staff-list-client";
 
 export const metadata: Metadata = {
   title: "Personel",
@@ -10,7 +12,7 @@ export default function StaffPage() {
   return (
     <DashboardShell>
       {/* <DashboardHeader heading="Personel" text="Personel yönetimi" /> */}
-      <p>Bu bölüm yakında eklenecek.</p>
+      <StaffListClient />
     </DashboardShell>
   );
 }
