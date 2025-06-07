@@ -238,29 +238,32 @@ export function AdaptiveNav({
           <nav className="hidden md:flex items-center space-x-6">
             {isAuthenticated ? (
               <>
-                {navItems.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = path === item.href;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={cn(
-                        "flex items-center text-sm font-medium transition-all duration-300 px-3 py-2 rounded-lg group relative overflow-hidden",
-                        isActive && "scale-105"
-                      )}
-                      style={isActive ? getActiveNavStyles() : getTextStyles()}
-                    >
-                      <Icon className="mr-2 h-4 w-4" />
-                      {item.title}
-                      {/* Hover effect overlay */}
-                      <div
-                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"
-                        style={getHoverStyles()}
-                      />
-                    </Link>
-                  );
-                })}
+                {mounted &&
+                  navItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = path === item.href;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={cn(
+                          "flex items-center text-sm font-medium transition-all duration-300 px-3 py-2 rounded-lg group relative overflow-hidden",
+                          isActive && "scale-105"
+                        )}
+                        style={
+                          isActive ? getActiveNavStyles() : getTextStyles()
+                        }
+                      >
+                        <Icon className="mr-2 h-4 w-4" />
+                        {item.title}
+                        {/* Hover effect overlay */}
+                        <div
+                          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"
+                          style={getHoverStyles()}
+                        />
+                      </Link>
+                    );
+                  })}
                 <div className="flex items-center space-x-4 ml-4 pl-4 border-l border-white/30">
                   <div
                     className="flex items-center space-x-2 transition-all duration-300"
@@ -353,24 +356,25 @@ export function AdaptiveNav({
             <nav className="flex flex-col space-y-4">
               {isAuthenticated ? (
                 <>
-                  {navItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = path === item.href;
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className="flex items-center text-sm font-medium transition-all duration-300 px-3 py-2 rounded-lg"
-                        onClick={() => setIsMenuOpen(false)}
-                        style={
-                          isActive ? getActiveNavStyles() : getTextStyles()
-                        }
-                      >
-                        <Icon className="mr-2 h-4 w-4" />
-                        {item.title}
-                      </Link>
-                    );
-                  })}
+                  {mounted &&
+                    navItems.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = path === item.href;
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className="flex items-center text-sm font-medium transition-all duration-300 px-3 py-2 rounded-lg"
+                          onClick={() => setIsMenuOpen(false)}
+                          style={
+                            isActive ? getActiveNavStyles() : getTextStyles()
+                          }
+                        >
+                          <Icon className="mr-2 h-4 w-4" />
+                          {item.title}
+                        </Link>
+                      );
+                    })}
                   <div
                     className="flex items-center space-x-2 text-sm pt-4 border-t"
                     style={{
