@@ -111,7 +111,7 @@ export default function HomePage() {
                     Bölgenizdeki en iyi kuaför ve berberlerde randevu bulun.
                     Kolay, hızlı ve pratik.
                   </p>
-                  <Link href="/salons">
+                  <Link href="/book">
                     <Button
                       size="lg"
                       className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-300"

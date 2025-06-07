@@ -8,6 +8,9 @@ const authRoutes = ["/login", "/register"];
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("auth_token")?.value;
+  const userStr = request.cookies.get("auth_user")?.value;
+  const user = userStr ? JSON.parse(userStr) : null;
+  const role = request.cookies.get("auth_role")?.value || user?.role;
   const { pathname } = request.nextUrl;
 
   // Redirect authenticated users from home page to dashboard
@@ -18,6 +21,21 @@ export async function middleware(request: NextRequest) {
   // Protect dashboard routes
   if (pathname.startsWith("/dashboard") && !token) {
     return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  // Role based access for staff routes
+  if (pathname.startsWith("/dashboard/staff")) {
+    if (!token) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+    if (role !== "owner") {
+      const userId = user?.id;
+      if (userId && !pathname.startsWith(`/dashboard/staff/${userId}`)) {
+        return NextResponse.redirect(
+          new URL(`/dashboard/staff/${userId}`, request.url)
+        );
+      }
+    }
   }
 
   // Prevent authenticated users from accessing auth pages

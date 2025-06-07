@@ -1,7 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Users, Clock, DollarSign } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui/loading";
+import { useDashboardMetrics } from "@/hooks/use-dashboard-metrics";
+import { formatCurrency, formatDuration } from "@/lib/utils";
 
 export function Overview() {
+  const { data, isLoading } = useDashboardMetrics();
+
   return (
     <>
       <Card>
@@ -12,9 +17,13 @@ export function Overview() {
           <Calendar className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">0</div>
+          <div className="text-2xl font-bold">
+            {isLoading ? <LoadingSpinner size="sm" /> : data.todayAppointments}
+          </div>
           <p className="text-xs text-muted-foreground">
-            Henüz randevu bulunmuyor
+            {data.todayAppointments === 0 && !isLoading
+              ? "Henüz randevu bulunmuyor"
+              : ""}
           </p>
         </CardContent>
       </Card>
@@ -24,9 +33,13 @@ export function Overview() {
           <Users className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">0</div>
+          <div className="text-2xl font-bold">
+            {isLoading ? <LoadingSpinner size="sm" /> : data.totalCustomers}
+          </div>
           <p className="text-xs text-muted-foreground">
-            Henüz müşteri bulunmuyor
+            {data.totalCustomers === 0 && !isLoading
+              ? "Henüz müşteri bulunmuyor"
+              : ""}
           </p>
         </CardContent>
       </Card>
@@ -36,8 +49,18 @@ export function Overview() {
           <Clock className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">0 dk</div>
-          <p className="text-xs text-muted-foreground">Henüz veri bulunmuyor</p>
+          <div className="text-2xl font-bold">
+            {isLoading ? (
+              <LoadingSpinner size="sm" />
+            ) : data.averageDuration > 0 ? (
+              formatDuration(data.averageDuration)
+            ) : (
+              "0 dk"
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {data.averageDuration === 0 && !isLoading ? "Henüz veri bulunmuyor" : ""}
+          </p>
         </CardContent>
       </Card>
       <Card>
@@ -46,9 +69,17 @@ export function Overview() {
           <DollarSign className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">₺0</div>
+          <div className="text-2xl font-bold">
+            {isLoading ? (
+              <LoadingSpinner size="sm" />
+            ) : data.monthlyRevenue > 0 ? (
+              formatCurrency(data.monthlyRevenue)
+            ) : (
+              "₺0"
+            )}
+          </div>
           <p className="text-xs text-muted-foreground">
-            Henüz gelir bulunmuyor
+            {data.monthlyRevenue === 0 && !isLoading ? "Henüz gelir bulunmuyor" : ""}
           </p>
         </CardContent>
       </Card>
