@@ -9,7 +9,6 @@ import {
   Building,
   Phone,
   Mail,
-  MapPin,
   Clock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,6 +21,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { LocationPicker } from "@/components/ui/location-picker";
 import type { RegisterData } from "../register-flow";
 import { WeeklyAvailabilitySelector } from "./weekly-availability-selector";
 
@@ -34,7 +34,11 @@ const formSchema = z.object({
       "Geçerli bir Türk telefon numarası girin (+90 ile başlamalı)"
     ),
   salonEmail: z.string().email("Geçerli bir e-posta adresi girin"),
-  address: z.string().min(10, "Detaylı adres bilgisi girin"),
+  location: z.object({
+    address: z.string().min(10, "Detaylı adres bilgisi girin"),
+    lat: z.number(),
+    lng: z.number(),
+  }),
 });
 
 interface SalonDetailsStepProps {
@@ -58,12 +62,21 @@ export function SalonDetailsStep({
       salonName: data.salonName,
       salonPhone: data.salonPhone,
       salonEmail: data.salonEmail,
-      address: data.address,
+      location: {
+        address: data.address,
+        lat: data.lat || 41.0082,
+        lng: data.lng || 28.9784,
+      },
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    updateData(values);
+    updateData({
+      ...values,
+      address: values.location.address,
+      lat: values.location.lat,
+      lng: values.location.lng,
+    });
     onNext();
   }
 
@@ -163,19 +176,15 @@ export function SalonDetailsStep({
 
           <FormField
             control={form.control}
-            name="address"
+            name="location"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="flex items-center space-x-2">
-                  <MapPin className="h-4 w-4" />
-                  <span>Adres</span>
-                </FormLabel>
+                <FormLabel>Konum</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Salonunuzun tam adresi"
+                  <LocationPicker
+                    value={field.value}
+                    onChange={field.onChange}
                     disabled={isLoading}
-                    className="h-10 md:h-12"
-                    {...field}
                   />
                 </FormControl>
                 <FormMessage />
