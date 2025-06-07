@@ -1,22 +1,28 @@
 import { Metadata } from "next";
-import { DashboardHeader } from "@/components/dashboard/header";
-import { DashboardShell } from "@/components/dashboard/shell";
+import { DashboardHeader } from "@/components/owner/dashboard/header";
+import { DashboardShell } from "@/components/owner/dashboard/shell";
 import { StaffCalendar } from "@/components/staff/staff-calendar";
 
 export const metadata: Metadata = {
   title: "Personel Takvimi",
-  description: "Çalışan randevu takvimi",
+  description: "Personelinizin randevu takvimi",
 };
 
-interface StaffCalendarPageProps {
+export default function StaffCalendarPage({
+  params,
+}: {
   params: { id: string };
-}
+}) {
+  const today = new Date();
+  const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD
 
-export default function StaffCalendarPage({ params }: StaffCalendarPageProps) {
   return (
     <DashboardShell>
-      <DashboardHeader heading="Takvim" text="Personel randevu takvimi" />
-      <StaffCalendar staffId={params.id} />
+      {/* <DashboardHeader
+        heading="Personel Takvimi"
+        text="Personelinizin randevu takvimini"
+      /> */}
+      <StaffCalendar staffId={params.id} range="month" date={formattedDate} />
     </DashboardShell>
   );
 }
