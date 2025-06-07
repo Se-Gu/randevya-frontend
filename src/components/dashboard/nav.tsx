@@ -10,8 +10,9 @@ import {
   LayoutDashboard,
   Scissors,
 } from "lucide-react";
+import { getAuthState } from "@/lib/auth";
 
-const items = [
+const ownerItems = [
   {
     title: "Genel Bakış",
     href: "/dashboard",
@@ -37,14 +38,39 @@ const items = [
     href: "/dashboard/settings",
     icon: Settings,
   },
+  {
+    title: "Personel",
+    href: "/dashboard/staff",
+    icon: Users,
+  },
+];
+
+const staffItems = [
+  {
+    title: "Takvim",
+    href: "/dashboard/staff/calendar",
+    icon: Calendar,
+  },
+  {
+    title: "Analizler",
+    href: "/dashboard/staff/analytics",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "Ayarlar",
+    href: "/dashboard/settings",
+    icon: Settings,
+  },
 ];
 
 export function DashboardNav() {
   const path = usePathname();
+  const { role } = getAuthState();
+  const navItems = role === "owner" ? ownerItems : staffItems;
 
   return (
     <nav className="grid items-start gap-2 p-4">
-      {items.map((item) => {
+      {navItems.map((item) => {
         const Icon = item.icon;
         return (
           <Link

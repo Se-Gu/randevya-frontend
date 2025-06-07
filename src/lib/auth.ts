@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 
 const TOKEN_KEY = "auth_token";
 const USER_KEY = "auth_user";
+const ROLE_KEY = "auth_role";
 
 export const authStorage = {
   getToken: () => {
@@ -40,23 +41,45 @@ export const authStorage = {
     Cookies.remove(USER_KEY);
   },
 
+  getRole: (): string | null => {
+    return Cookies.get(ROLE_KEY) || null;
+  },
+
+  setRole: (role: string) => {
+    Cookies.set(ROLE_KEY, role, {
+      expires: 7,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+  },
+
+  removeRole: () => {
+    Cookies.remove(ROLE_KEY);
+  },
+
   set: (data: LoginResponse) => {
     authStorage.setToken(data.access_token);
     authStorage.setUser(data.user);
+    if (data.user.role) {
+      authStorage.setRole(data.user.role);
+    }
   },
 
   clear: () => {
     authStorage.removeToken();
     authStorage.removeUser();
+    authStorage.removeRole();
   },
 };
 
 export function getAuthState() {
   const token = authStorage.getToken();
   const user = authStorage.getUser();
+  const role = authStorage.getRole();
 
   return {
     isAuthenticated: !!token,
     user,
+    role,
   };
 }
