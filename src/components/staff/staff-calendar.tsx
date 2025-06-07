@@ -1,26 +1,50 @@
 "use client";
 
 import { useStaffCalendar } from "@/hooks/staff";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { LoadingSpinner } from "@/components/ui/loading";
 
 interface StaffCalendarProps {
   staffId: string;
+  range: string;
+  date: string;
 }
 
-export function StaffCalendar({ staffId }: StaffCalendarProps) {
-  const today = new Date().toISOString().split("T")[0];
-  const { data, isLoading } = useStaffCalendar(staffId, "day", today);
+export function StaffCalendar({ staffId, range, date }: StaffCalendarProps) {
+  const { data, isLoading, isError } = useStaffCalendar(staffId, range, date);
 
   if (isLoading) {
-    return <p>Yükleniyor...</p>;
+    return (
+      <div className="flex justify-center p-4">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="p-4 text-center text-sm text-red-500">
+        Takvim verileri alınırken bir hata oluştu.
+      </div>
+    );
   }
 
   return (
-    <ul className="space-y-1">
-      {data?.map((appt) => (
-        <li key={appt.id} className="border rounded p-2">
-          {appt.date} {appt.time} - {appt.customerName}
-        </li>
-      ))}
-    </ul>
+    <Card>
+      <CardHeader>
+        <CardTitle>Takvim</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ul className="space-y-2">
+          {data?.map((appointment) => (
+            <li key={appointment.id} className="text-sm">
+              <span className="font-medium">{appointment.date}</span>{" "}
+              {appointment.time} - {appointment.customerName}
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
+
   );
 }
