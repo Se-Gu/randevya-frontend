@@ -45,5 +45,6 @@ export function StaffCalendar({ staffId, range, date }: StaffCalendarProps) {
         </ul>
       </CardContent>
     </Card>
+
   );
 }
