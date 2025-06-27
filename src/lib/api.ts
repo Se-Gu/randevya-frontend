@@ -12,6 +12,7 @@ import type {
   CreateStaffDto,
   UpdateStaffDto,
   StaffMetrics,
+  SalonMetrics,
   Appointment,
   CreateAppointmentDto,
   UpdateAppointmentDto,
@@ -116,6 +117,9 @@ export const salonsApi = {
     apiRequest<void>(`/salons/${id}`, {
       method: "DELETE",
     }),
+  getMetrics: (id: string) => apiRequest<SalonMetrics>(`/salons/${id}/metrics`),
+  getCalendar: (id: string, range: string, date: string) =>
+    apiRequest<Appointment[]>(`/salons/${id}/calendar?range=${range}&date=${date}`),
 };
 
 // Services API
