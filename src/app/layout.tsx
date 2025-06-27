@@ -1,9 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { ProvidersWrapper } from "@/components/providers-wrapper";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -31,9 +28,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Randevya" />
         <link rel="apple-touch-icon" href="/icons/icon-512x512.png" />
       </head>
-      <body
-        className={`${inter.className} min-h-screen bg-background text-foreground antialiased`}
-      >
+      <body className="min-h-screen bg-background text-foreground antialiased">
         <ProvidersWrapper>{children}</ProvidersWrapper>
       </body>
     </html>
