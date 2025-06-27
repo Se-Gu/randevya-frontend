@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // Routes that require authentication
-const protectedRoutes = ["/dashboard"];
+const protectedRoutes = ["/dashboard", "/admin"];
 // Routes that should not be accessible when authenticated
 const authRoutes = ["/login", "/register"];
 
@@ -38,6 +38,16 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Role based access for admin routes
+  if (pathname.startsWith("/admin")) {
+    if (!token) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+    if (role !== "system_admin") {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+  }
+
   // Prevent authenticated users from accessing auth pages
   if (token && (pathname === "/login" || pathname === "/register")) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
@@ -48,5 +58,5 @@ export async function middleware(request: NextRequest) {
 
 // Match all routes that start with /dashboard, /login, or /register
 export const config = {
-  matcher: ["/", "/dashboard/:path*", "/login", "/register"],
+  matcher: ["/", "/dashboard/:path*", "/admin/:path*", "/login", "/register"],
 };

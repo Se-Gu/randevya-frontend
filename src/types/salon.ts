@@ -20,3 +20,14 @@ export interface Salon {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface SalonMetrics {
+  appointmentCount: number;
+  revenue: number;
+  mostBookedService: {
+    serviceId: string;
+    name: string;
+    count: number;
+  } | null;
+  utilizationRate: number;
+}
