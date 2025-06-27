@@ -20,12 +20,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/components/ui/use-toast'
 import type { Salon } from '@/types'
-import type { Metadata } from 'next'
 
-export const metadata: Metadata = {
-  title: 'Ayarlar',
-  description: 'Salon bilgilerinizi düzenleyin',
-}
 
 const formSchema = z.object({
   name: z.string().min(2, 'Salon adı en az 2 karakter olmalıdır'),
