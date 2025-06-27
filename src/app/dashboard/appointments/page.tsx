@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Metadata } from "next";
 import {
   useQuery,
   useMutation,
@@ -24,10 +23,6 @@ import { appointmentsApi } from "@/lib/api";
 import { formatDate, formatTime } from "@/lib/utils";
 import type { Appointment } from "@/types";
 
-export const metadata: Metadata = {
-  title: "Randevular",
-  description: "Randevu yönetimi",
-};
 
 export default function AppointmentsPage() {
   const { toast } = useToast();
