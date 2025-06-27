@@ -6,6 +6,7 @@ import { salonsApi } from "@/lib/api";
 import type { Salon } from "@/types";
 import { Card } from "@/components/ui/card";
 import { LoadingPage } from "@/components/ui/loading";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 
 export default function SalonsPage() {
   const { data, isLoading, isError } = useQuery<Salon[]>({
@@ -27,6 +28,12 @@ export default function SalonsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-4">
+      <Breadcrumbs
+        items={[
+          { label: "Ana Sayfa", href: "/" },
+          { label: "Kuaförler" },
+        ]}
+      />
       <h1 className="text-2xl font-bold">Kuaförler</h1>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {data.map((salon) => (

@@ -8,6 +8,7 @@ import type { Salon, Service } from "@/types";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LoadingPage } from "@/components/ui/loading";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 
 export default function SalonDetailPage() {
   const params = useParams();
@@ -35,6 +36,21 @@ export default function SalonDetailPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
+      <Breadcrumbs
+        items={[
+          { label: "Ana Sayfa", href: "/" },
+          { label: "Kuaförler", href: "/salons" },
+          { label: salonQuery.data.name },
+        ]}
+      />
+      <div className="flex items-center space-x-2">
+        <Link href="/salons">
+          <Button variant="outline" size="sm">&larr; Kuaförler</Button>
+        </Link>
+        <Link href="/">
+          <Button variant="outline" size="sm">Ana Sayfa</Button>
+        </Link>
+      </div>
       <div className="space-y-2">
         <h1 className="text-2xl font-bold">{salonQuery.data.name}</h1>
         <p className="text-sm text-muted-foreground">
