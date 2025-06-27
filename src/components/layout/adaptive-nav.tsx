@@ -70,6 +70,19 @@ const staffNavItems = [
   },
 ];
 
+const adminNavItems = [
+  {
+    title: "Kullanıcılar",
+    href: "/admin/users",
+    icon: Users,
+  },
+  {
+    title: "Salonlar",
+    href: "/admin/salons",
+    icon: Scissors,
+  },
+];
+
 export function AdaptiveNav({
   isAuthenticated = true,
   role = null,
@@ -83,7 +96,12 @@ export function AdaptiveNav({
   const navRef = useRef<HTMLElement>(null);
   const path = usePathname();
   const router = useRouter();
-  const navItems = role === "owner" ? ownerNavItems : staffNavItems;
+  const navItems =
+    role === "owner"
+      ? ownerNavItems
+      : role === "system_admin"
+      ? adminNavItems
+      : staffNavItems;
 
   useEffect(() => {
     setMounted(true);
