@@ -1,4 +1,4 @@
-import { WeeklyAvailability } from "./shared";
+import { WeeklyAvailability, UserRole } from "./shared";
 
 export interface CreateStaffDto {
   name: string;
@@ -11,6 +11,9 @@ export interface UpdateStaffDto extends Partial<CreateStaffDto> {}
 export interface Staff {
   id: string;
   name: string;
+  email: string;
+  phone?: string;
+  role: UserRole;
   workingHours: WeeklyAvailability[];
   salonId: string;
   createdAt: Date;

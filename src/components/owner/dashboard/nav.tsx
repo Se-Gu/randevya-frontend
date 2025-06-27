@@ -44,11 +44,6 @@ const ownerItems = [
     href: "/dashboard/settings",
     icon: Settings,
   },
-  {
-    title: "Personel",
-    href: "/dashboard/staff",
-    icon: Users,
-  },
 ];
 
 const staffItems = [
