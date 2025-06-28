@@ -1,71 +1,59 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import {
-  Search,
-  Calendar,
-  Clock,
-  Scissors,
-  TrendingUp,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Footer } from "@/components/layout/footer";
-import Image from "next/image";
-import { useState, useEffect, useRef, type TouchEvent } from "react";
+import Link from "next/link"
+import { Search, Calendar, Clock, Scissors, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Footer } from "@/components/layout/footer"
+import Image from "next/image"
+import { useState, useEffect, useRef, type TouchEvent } from "react"
 
 export default function HomePage() {
-  const [activeSection, setActiveSection] = useState<"customer" | "business">(
-    "customer"
-  );
-  const touchStartX = useRef<number | null>(null);
-  const touchEndX = useRef<number | null>(null);
+  const [activeSection, setActiveSection] = useState<"customer" | "business">("customer")
+  const touchStartX = useRef<number | null>(null)
+  const touchEndX = useRef<number | null>(null)
 
-  const goToCustomer = () => setActiveSection("customer");
-  const goToBusiness = () => setActiveSection("business");
+  const goToCustomer = () => setActiveSection("customer")
+  const goToBusiness = () => setActiveSection("business")
 
   // Reset timer when user manually changes section
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveSection((prev) =>
-        prev === "customer" ? "business" : "customer"
-      );
-    }, 5000);
+      setActiveSection((prev) => (prev === "customer" ? "business" : "customer"))
+    }, 5000)
 
-    return () => clearInterval(interval);
-  }, [activeSection]); // Dependency on activeSection resets timer when it changes
+    return () => clearInterval(interval)
+  }, [activeSection]) // Dependency on activeSection resets timer when it changes
 
   // Handle touch events for swipe
   const handleTouchStart = (e: TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
+    touchStartX.current = e.touches[0].clientX
+  }
 
   const handleTouchMove = (e: TouchEvent) => {
-    touchEndX.current = e.touches[0].clientX;
-  };
+    touchEndX.current = e.touches[0].clientX
+  }
 
   const handleTouchEnd = () => {
-    if (!touchStartX.current || !touchEndX.current) return;
+    if (!touchStartX.current || !touchEndX.current) return
 
-    const diffX = touchStartX.current - touchEndX.current;
-    const threshold = 50; // Minimum swipe distance
+    const diffX = touchStartX.current - touchEndX.current
+    const threshold = 50 // Minimum swipe distance
 
     if (Math.abs(diffX) > threshold) {
       if (diffX > 0) {
         // Swipe left, go to business
-        goToBusiness();
+        goToBusiness()
       } else {
         // Swipe right, go to customer
-        goToCustomer();
+        goToCustomer()
       }
     }
 
     // Reset values
-    touchStartX.current = null;
-    touchEndX.current = null;
-  };
+    touchStartX.current = null
+    touchEndX.current = null
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -80,9 +68,7 @@ export default function HomePage() {
           {/* Customer Section */}
           <div
             className={`absolute inset-0 transition-all duration-700 ease-in-out ${
-              activeSection === "customer"
-                ? "opacity-100 z-20 translate-y-0"
-                : "opacity-0 z-10 translate-y-4"
+              activeSection === "customer" ? "opacity-100 z-20 translate-y-0" : "opacity-0 z-10 translate-y-4"
             }`}
           >
             <div className="absolute inset-0">
@@ -103,21 +89,18 @@ export default function HomePage() {
                 <div className="max-w-4xl mx-auto backdrop-blur-sm bg-black/30 p-8 rounded-xl">
                   <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
                     <span className="block">Hemen</span>
-                    <span className="block text-blue-400">
-                      Randevunuzu Alın
-                    </span>
+                    <span className="block text-blue-400">Randevunuzu Alın</span>
                   </h1>
                   <p className="text-xl md:text-2xl max-w-3xl mx-auto text-white/90 mb-8">
-                    Bölgenizdeki en iyi kuaför ve berberlerde randevu bulun.
-                    Kolay, hızlı ve pratik.
+                    Bölgenizdeki en iyi kuaför ve berberlerde randevu bulun. Kolay, hızlı ve pratik.
                   </p>
-                  <Link href="/book">
+                  <Link href="/salons">
                     <Button
                       size="lg"
                       className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
                     >
                       <Search className="mr-2 h-5 w-5" />
-                      Randevu Bul
+                      Kuaför Bul
                     </Button>
                   </Link>
                 </div>
@@ -128,9 +111,7 @@ export default function HomePage() {
           {/* Business Section */}
           <div
             className={`absolute inset-0 transition-all duration-700 ease-in-out ${
-              activeSection === "business"
-                ? "opacity-100 z-20 translate-y-0"
-                : "opacity-0 z-10 -translate-y-4"
+              activeSection === "business" ? "opacity-100 z-20 translate-y-0" : "opacity-0 z-10 -translate-y-4"
             }`}
           >
             <div className="absolute inset-0">
@@ -151,14 +132,11 @@ export default function HomePage() {
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                   <div className="text-white space-y-6 backdrop-blur-sm bg-black/30 p-8 rounded-xl">
                     <h2 className="text-5xl md:text-6xl font-bold tracking-tight">
-                      <span className="block text-green-400">
-                        İşletme Sahibi
-                      </span>
+                      <span className="block text-green-400">İşletme Sahibi</span>
                       <span className="block">misiniz?</span>
                     </h2>
                     <p className="text-xl md:text-2xl text-white/90">
-                      Salonunuzu dijital dünyaya taşıyın. Randevularınızı
-                      yönetin, müşterilerinizi artırın.
+                      Salonunuzu dijital dünyaya taşıyın. Randevularınızı yönetin, müşterilerinizi artırın.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4">
                       <Link href="/register">
@@ -192,9 +170,7 @@ export default function HomePage() {
           <button
             onClick={goToCustomer}
             className={`hidden md:block absolute left-6 top-1/2 transform -translate-y-1/2 z-30 p-4 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 hover:scale-110 transition-all duration-300 shadow-lg ${
-              activeSection === "customer"
-                ? "opacity-50 cursor-not-allowed"
-                : "opacity-100"
+              activeSection === "customer" ? "opacity-50 cursor-not-allowed" : "opacity-100"
             }`}
             disabled={activeSection === "customer"}
           >
@@ -204,9 +180,7 @@ export default function HomePage() {
           <button
             onClick={goToBusiness}
             className={`hidden md:block absolute right-6 top-1/2 transform -translate-y-1/2 z-30 p-4 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 hover:scale-110 transition-all duration-300 shadow-lg ${
-              activeSection === "business"
-                ? "opacity-50 cursor-not-allowed"
-                : "opacity-100"
+              activeSection === "business" ? "opacity-50 cursor-not-allowed" : "opacity-100"
             }`}
             disabled={activeSection === "business"}
           >
@@ -219,17 +193,13 @@ export default function HomePage() {
               <button
                 onClick={goToCustomer}
                 className={`w-4 h-4 rounded-full transition-all duration-300 ${
-                  activeSection === "customer"
-                    ? "bg-white scale-125"
-                    : "bg-white/40 hover:bg-white/60"
+                  activeSection === "customer" ? "bg-white scale-125" : "bg-white/40 hover:bg-white/60"
                 }`}
               />
               <button
                 onClick={goToBusiness}
                 className={`w-4 h-4 rounded-full transition-all duration-300 ${
-                  activeSection === "business"
-                    ? "bg-white scale-125"
-                    : "bg-white/40 hover:bg-white/60"
+                  activeSection === "business" ? "bg-white scale-125" : "bg-white/40 hover:bg-white/60"
                 }`}
               />
             </div>
@@ -251,9 +221,7 @@ export default function HomePage() {
         <section className="py-16 md:py-24 bg-white">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-900">
-                Neden Randevya?
-              </h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-900">Neden Randevya?</h2>
               <p className="text-xl text-slate-600 max-w-2xl mx-auto">
                 Randevu almayı basit ve stressiz hale getiriyoruz
               </p>
@@ -265,12 +233,9 @@ export default function HomePage() {
                   <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                     <Search className="h-6 w-6 text-blue-600" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2 text-slate-900">
-                    Kolay Keşif
-                  </h3>
+                  <h3 className="text-xl font-semibold mb-2 text-slate-900">Kolay Keşif</h3>
                   <p className="text-slate-600">
-                    Sezgisel arama ve filtreleme sistemimizle size en uygun
-                    kuaförü bulun.
+                    Sezgisel arama ve filtreleme sistemimizle size en uygun kuaförü bulun.
                   </p>
                 </CardContent>
               </Card>
@@ -280,12 +245,8 @@ export default function HomePage() {
                   <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                     <Calendar className="h-6 w-6 text-green-600" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2 text-slate-900">
-                    Anlık Rezervasyon
-                  </h3>
-                  <p className="text-slate-600">
-                    Gerçek zamanlı müsaitlik kontrolü ile anında randevu alın.
-                  </p>
+                  <h3 className="text-xl font-semibold mb-2 text-slate-900">Anlık Rezervasyon</h3>
+                  <p className="text-slate-600">Gerçek zamanlı müsaitlik kontrolü ile anında randevu alın.</p>
                 </CardContent>
               </Card>
 
@@ -294,12 +255,8 @@ export default function HomePage() {
                   <div className="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                     <Clock className="h-6 w-6 text-slate-600" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2 text-slate-900">
-                    Hesap Gerektirmez
-                  </h3>
-                  <p className="text-slate-600">
-                    Hesap oluşturmadan randevu alın. Hızlı ve zahmetsiz.
-                  </p>
+                  <h3 className="text-xl font-semibold mb-2 text-slate-900">Hesap Gerektirmez</h3>
+                  <p className="text-slate-600">Hesap oluşturmadan randevu alın. Hızlı ve zahmetsiz.</p>
                 </CardContent>
               </Card>
             </div>
@@ -310,12 +267,8 @@ export default function HomePage() {
         <section className="py-16 md:py-24 bg-slate-50">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-900">
-                Nasıl Çalışır?
-              </h2>
-              <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-                Randevu almak 1-2-3 kadar kolay
-              </p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-900">Nasıl Çalışır?</h2>
+              <p className="text-xl text-slate-600 max-w-2xl mx-auto">Randevu almak 1-2-3 kadar kolay</p>
             </div>
 
             <div className="grid gap-8 md:grid-cols-3">
@@ -323,12 +276,9 @@ export default function HomePage() {
                 <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-xl shadow-lg">
                   <Search className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-slate-900">
-                  Kuaför Seçin
-                </h3>
+                <h3 className="text-xl font-semibold mb-2 text-slate-900">Kuaför Seçin</h3>
                 <p className="text-slate-600">
-                  Bölgenizdeki kuaförleri inceleyin, hizmetlerini, fiyatlarını
-                  ve yorumlarını kontrol edin.
+                  Bölgenizdeki kuaförleri inceleyin, hizmetlerini, fiyatlarını ve yorumlarını kontrol edin.
                 </p>
               </div>
 
@@ -336,12 +286,9 @@ export default function HomePage() {
                 <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-xl shadow-lg">
                   <Calendar className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-slate-900">
-                  Hizmet Seçin
-                </h3>
+                <h3 className="text-xl font-semibold mb-2 text-slate-900">Hizmet Seçin</h3>
                 <p className="text-slate-600">
-                  İstediğiniz hizmeti seçin ve tercih ettiğiniz tarih ve saati
-                  belirleyin.
+                  İstediğiniz hizmeti seçin ve tercih ettiğiniz tarih ve saati belirleyin.
                 </p>
               </div>
 
@@ -349,13 +296,8 @@ export default function HomePage() {
                 <div className="w-16 h-16 bg-slate-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-xl shadow-lg">
                   <Clock className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-slate-900">
-                  Onaylayın ve Gidin
-                </h3>
-                <p className="text-slate-600">
-                  Bilgilerinizi girin, randevunuzu onaylayın ve onay mesajını
-                  alın.
-                </p>
+                <h3 className="text-xl font-semibold mb-2 text-slate-900">Onaylayın ve Gidin</h3>
+                <p className="text-slate-600">Bilgilerinizi girin, randevunuzu onaylayın ve onay mesajını alın.</p>
               </div>
             </div>
           </div>
@@ -364,5 +306,5 @@ export default function HomePage() {
 
       <Footer />
     </div>
-  );
+  )
 }

@@ -16,22 +16,38 @@ import type {
   Appointment,
   CreateAppointmentDto,
   UpdateAppointmentDto,
-} from "@/types";
+} from "@/types"
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
 
 export class ApiError extends Error {
-  constructor(message: string, public status: number, public data?: any) {
-    super(message);
-    this.name = "ApiError";
+  constructor(
+    message: string,
+    public status: number,
+    public data?: any,
+  ) {
+    super(message)
+    this.name = "ApiError"
   }
 }
 
-async function apiRequest<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const url = `${API_BASE_URL}${endpoint}`;
+export interface ListSalonsParams {
+  name?: string
+  sortBy?: "name" | "createdAt"
+  sortOrder?: "ASC" | "DESC"
+  page?: number
+  limit?: number
+}
+
+export interface PaginatedResponse<T> {
+  data: T[]
+  total: number
+  page: number
+  limit: number
+}
+
+async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  const url = `${API_BASE_URL}${endpoint}`
 
   const config: RequestInit = {
     headers: {
@@ -39,44 +55,40 @@ async function apiRequest<T>(
       ...options.headers,
     },
     ...options,
-  };
+  }
 
   // Add auth token if available
   const token = document.cookie
     .split("; ")
     .find((row) => row.startsWith("auth_token="))
-    ?.split("=")[1];
+    ?.split("=")[1]
 
   if (token) {
     config.headers = {
       ...config.headers,
       Authorization: `Bearer ${token}`,
-    };
+    }
   }
 
   try {
-    const response = await fetch(url, config);
+    const response = await fetch(url, config)
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new ApiError(
-        errorData.message || `HTTP error! status: ${response.status}`,
-        response.status,
-        errorData
-      );
+      const errorData = await response.json().catch(() => ({}))
+      throw new ApiError(errorData.message || `HTTP error! status: ${response.status}`, response.status, errorData)
     }
 
-    const contentType = response.headers.get("content-type");
+    const contentType = response.headers.get("content-type")
     if (contentType && contentType.includes("application/json")) {
-      return await response.json();
+      return await response.json()
     }
 
-    return response.text() as unknown as T;
+    return response.text() as unknown as T
   } catch (error) {
     if (error instanceof ApiError) {
-      throw error;
+      throw error
     }
-    throw new ApiError("Network error occurred", 0);
+    throw new ApiError("Network error occurred", 0)
   }
 }
 
@@ -93,15 +105,27 @@ export const authApi = {
       method: "POST",
       body: JSON.stringify(userData),
     }),
-};
+}
 
 // Salons API
 export const salonsApi = {
-  getAll: () => apiRequest<Salon[]>("/salons"),
+  getAll: (params?: ListSalonsParams) => {
+    const searchParams = new URLSearchParams()
+
+    if (params?.name) searchParams.append("name", params.name)
+    if (params?.sortBy) searchParams.append("sortBy", params.sortBy)
+    if (params?.sortOrder) searchParams.append("sortOrder", params.sortOrder)
+    if (params?.page) searchParams.append("page", params.page.toString())
+    if (params?.limit) searchParams.append("limit", params.limit.toString())
+
+    const queryString = searchParams.toString()
+    const endpoint = queryString ? `/salons?${queryString}` : "/salons"
+
+    return apiRequest<PaginatedResponse<Salon>>(endpoint)
+  },
   getById: (id: string) => apiRequest<Salon>(`/salons/${id}`),
   getServices: (id: string) => apiRequest<Service[]>(`/salons/${id}/services`),
-  getAvailability: (id: string) =>
-    apiRequest<any>(`/salons/${id}/availability`),
+  getAvailability: (id: string) => apiRequest<any>(`/salons/${id}/availability`),
   getMe: () => apiRequest<Salon>("/salons/me"),
   create: (data: CreateSalonDto) =>
     apiRequest<Salon>("/salons", {
@@ -120,14 +144,13 @@ export const salonsApi = {
   getMetrics: (id: string) => apiRequest<SalonMetrics>(`/salons/${id}/metrics`),
   getCalendar: (id: string, range: string, date: string) =>
     apiRequest<Appointment[]>(`/salons/${id}/calendar?range=${range}&date=${date}`),
-};
+}
 
 // Services API
 export const servicesApi = {
   getAll: () => apiRequest<Service[]>("/services"),
   getById: (id: string) => apiRequest<Service>(`/services/${id}`),
-  getBySalon: (salonId: string) =>
-    apiRequest<Service[]>(`/services/salon/${salonId}`),
+  getBySalon: (salonId: string) => apiRequest<Service[]>(`/services/salon/${salonId}`),
   create: (data: CreateServiceDto) =>
     apiRequest<Service>("/services", {
       method: "POST",
@@ -142,14 +165,13 @@ export const servicesApi = {
     apiRequest<void>(`/services/${id}`, {
       method: "DELETE",
     }),
-};
+}
 
 // Staff API
 export const staffApi = {
   getAll: () => apiRequest<Staff[]>("/staff"),
   getById: (id: string) => apiRequest<Staff>(`/staff/${id}`),
-  getBySalon: (salonId: string) =>
-    apiRequest<Staff[]>(`/staff/salon/${salonId}`),
+  getBySalon: (salonId: string) => apiRequest<Staff[]>(`/staff/salon/${salonId}`),
   create: (data: CreateStaffDto) =>
     apiRequest<Staff>("/staff", {
       method: "POST",
@@ -166,17 +188,14 @@ export const staffApi = {
     }),
   getMetrics: (id: string) => apiRequest<StaffMetrics>(`/staff/${id}/metrics`),
   getCalendar: (id: string, range: string, date: string) =>
-    apiRequest<Appointment[]>(
-      `/staff/${id}/calendar?range=${range}&date=${date}`
-    ),
-};
+    apiRequest<Appointment[]>(`/staff/${id}/calendar?range=${range}&date=${date}`),
+}
 
 // Appointments API
 export const appointmentsApi = {
   getAll: () => apiRequest<Appointment[]>("/appointments"),
   getById: (id: string) => apiRequest<Appointment>(`/appointments/${id}`),
-  getByToken: (token: string) =>
-    apiRequest<Appointment>(`/appointments/token/${token}`),
+  getByToken: (token: string) => apiRequest<Appointment>(`/appointments/token/${token}`),
   create: (data: CreateAppointmentDto) =>
     apiRequest<Appointment>("/appointments", {
       method: "POST",
@@ -191,7 +210,7 @@ export const appointmentsApi = {
     apiRequest<void>(`/appointments/${id}?token=${token}`, {
       method: "DELETE",
     }),
-};
+}
 
 // Users API
 export const usersApi = {
@@ -211,7 +230,7 @@ export const usersApi = {
     apiRequest<void>(`/users/${id}`, {
       method: "DELETE",
     }),
-};
+}
 
 // Admin API
 export const adminApi = {
@@ -225,4 +244,4 @@ export const adminApi = {
     apiRequest<void>(`/admin/salons/${id}`, {
       method: "DELETE",
     }),
-};
+}
