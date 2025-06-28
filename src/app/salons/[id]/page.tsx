@@ -11,6 +11,18 @@ import { LoadingPage } from "@/components/ui/loading"
 import { Breadcrumbs } from "@/components/ui/breadcrumbs"
 import { MapPin, Phone, Mail, Clock, Calendar, Star, ArrowLeft, Scissors, Users, CheckCircle } from "lucide-react"
 
+// Helper function to check if salon is open today
+const isSalonOpenToday = (weeklyAvailability: any[]) => {
+  if (!weeklyAvailability || weeklyAvailability.length === 0) return false
+
+  const today = new Date().getDay()
+  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+  const todayDayName = dayNames[today]
+
+  const todayAvailability = weeklyAvailability.find((availability) => availability.day === todayDayName)
+  return todayAvailability && todayAvailability.slots && todayAvailability.slots.length > 0
+}
+
 export default function SalonDetailPage() {
   const params = useParams()
   const id = Array.isArray(params.id) ? params.id[0] : (params.id as string)
@@ -52,6 +64,7 @@ export default function SalonDetailPage() {
   const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
   const todayDayName = dayNames[today]
   const todayAvailability = salon.weeklyAvailability?.find((availability) => availability.day === todayDayName)
+  const isOpenToday = isSalonOpenToday(salon.weeklyAvailability)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -114,7 +127,7 @@ export default function SalonDetailPage() {
                       <Clock className="h-5 w-5 text-gray-400 flex-shrink-0" />
                       <div>
                         <p className="font-medium text-gray-900">Bugün</p>
-                        <p className="text-gray-600">
+                        <p className={`${isOpenToday ? "text-green-600" : "text-red-600"}`}>
                           {todayAvailability && todayAvailability.slots.length > 0
                             ? `${todayAvailability.slots[0].start} - ${todayAvailability.slots[0].end}`
                             : "Kapalı"}
@@ -184,30 +197,32 @@ export default function SalonDetailPage() {
               <CardContent>
                 {salon.weeklyAvailability && salon.weeklyAvailability.length > 0 ? (
                   <div className="space-y-3">
-                    {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day, index) => {
-                      const availability = salon.weeklyAvailability.find((a) => a.day === day)
-                      const isToday = new Date().getDay() === index
-                      const dayLabels = ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"]
+                    {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(
+                      (day, index) => {
+                        const availability = salon.weeklyAvailability.find((a) => a.day === day)
+                        const isToday = new Date().getDay() === index
+                        const dayLabels = ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"]
 
-                      return (
-                        <div
-                          key={day}
-                          className={`flex justify-between items-center p-3 rounded-lg ${
-                            isToday ? "bg-blue-50 border border-blue-200" : "bg-gray-50"
-                          }`}
-                        >
-                          <span className={`font-medium ${isToday ? "text-blue-900" : "text-gray-900"}`}>
-                            {dayLabels[index]}
-                            {isToday && <span className="ml-2 text-xs text-blue-600">(Bugün)</span>}
-                          </span>
-                          <span className={`${isToday ? "text-blue-700" : "text-gray-600"}`}>
-                            {availability && availability.slots.length > 0
-                              ? `${availability.slots[0].start} - ${availability.slots[0].end}`
-                              : "Kapalı"}
-                          </span>
-                        </div>
-                      )
-                    })}
+                        return (
+                          <div
+                            key={day}
+                            className={`flex justify-between items-center p-3 rounded-lg ${
+                              isToday ? "bg-blue-50 border border-blue-200" : "bg-gray-50"
+                            }`}
+                          >
+                            <span className={`font-medium ${isToday ? "text-blue-900" : "text-gray-900"}`}>
+                              {dayLabels[index]}
+                              {isToday && <span className="ml-2 text-xs text-blue-600">(Bugün)</span>}
+                            </span>
+                            <span className={`${isToday ? "text-blue-700" : "text-gray-600"}`}>
+                              {availability && availability.slots.length > 0
+                                ? `${availability.slots[0].start} - ${availability.slots[0].end}`
+                                : "Kapalı"}
+                            </span>
+                          </div>
+                        )
+                      },
+                    )}
                   </div>
                 ) : (
                   <p className="text-gray-500 text-center py-4">Çalışma saatleri belirtilmemiş.</p>

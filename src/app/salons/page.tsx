@@ -12,6 +12,18 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, MapPin, Phone, Mail, Clock, ChevronLeft, ChevronRight, SortAsc, SortDesc } from "lucide-react"
 
+// Helper function to check if salon is open today
+const isSalonOpenToday = (weeklyAvailability: any[]) => {
+  if (!weeklyAvailability || weeklyAvailability.length === 0) return false
+
+  const today = new Date().getDay()
+  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+  const todayDayName = dayNames[today]
+
+  const todayAvailability = weeklyAvailability.find((availability) => availability.day === todayDayName)
+  return todayAvailability && todayAvailability.slots && todayAvailability.slots.length > 0
+}
+
 export default function SalonsPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [sortBy, setSortBy] = useState<"name" | "createdAt">("createdAt")
@@ -143,7 +155,7 @@ export default function SalonsPage() {
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-8">
               {data.data.map((salon) => (
                 <Link key={salon.id} href={`/salons/${salon.id}`}>
-                  <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group">
+                  <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group flex flex-col">
                     <CardHeader className="pb-3">
                       <div className="w-full h-48 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg mb-4 flex items-center justify-center group-hover:from-blue-200 group-hover:to-purple-200 transition-colors">
                         <div className="text-4xl font-bold text-blue-600">{salon.name.charAt(0).toUpperCase()}</div>
@@ -152,8 +164,8 @@ export default function SalonsPage() {
                         {salon.name}
                       </h3>
                     </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="space-y-3">
+                    <CardContent className="pt-0 flex-1 flex flex-col">
+                      <div className="space-y-3 flex-1">
                         <div className="flex items-start gap-2 text-sm text-gray-600">
                           <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
                           <span className="line-clamp-2">{salon.location.address}</span>
@@ -169,12 +181,14 @@ export default function SalonsPage() {
                           <span className="truncate">{salon.email}</span>
                         </div>
 
-                        {salon.weeklyAvailability && salon.weeklyAvailability.length > 0 && (
-                          <div className="flex items-center gap-2 text-sm text-green-600">
-                            <Clock className="h-4 w-4 flex-shrink-0" />
-                            <span>Müsait</span>
-                          </div>
-                        )}
+                        <div className="flex items-center gap-2 text-sm">
+                          <Clock className="h-4 w-4 flex-shrink-0" />
+                          {isSalonOpenToday(salon.weeklyAvailability) ? (
+                            <span className="text-green-600">Bugün Açık</span>
+                          ) : (
+                            <span className="text-red-600">Bugün Kapalı</span>
+                          )}
+                        </div>
                       </div>
 
                       <div className="mt-4 pt-4 border-t">
